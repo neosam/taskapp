@@ -72,6 +72,9 @@ class UserSetup(models.Model):
     	newUserScore.save()
     	self.save()
 
+    def get_rank_by_company(company):
+    	return UserSetup.objects.filter(company = company).order_by('-score')
+
 
 class UserScoreHistory(models.Model):
 	user = models.ForeignKey(UserSetup, on_delete = models.CASCADE)
@@ -81,5 +84,6 @@ class UserScoreHistory(models.Model):
 	created = models.DateTimeField(auto_now = True)
 	def __str__(self):
 		return str(self.user) + ": " + self.message[0:80] + " - (" + str(self.score) + ", " + str(self.score_delta) + ")"
+
 
 

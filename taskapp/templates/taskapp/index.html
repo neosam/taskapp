@@ -61,6 +61,19 @@
 									</ul>
 								</div>
 							</div>
+							<div class="col-md-4">
+								<div class="card">
+									<h2 class="card-title">General tasks</h2>
+									<ul class="list-group list-group-flush">
+										{% for userSetup in userSetup.users %}
+										<li class="list-group-item">
+											{{userSetup.user.username}}, {{userSetup.score}}
+										</li>
+										{% endfor %}
+										
+									</ul>
+								</div>
+							</div>
 						</div> <!-- row -->
 					</div> <!-- container -->
 				</div> <!-- company card -->
