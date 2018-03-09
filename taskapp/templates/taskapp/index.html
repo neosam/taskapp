@@ -1,0 +1,69 @@
+{% load static %}
+
+<html>
+<head>
+	<title>Test</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'taskapp/css/bootstrap.min.css'%}"/>
+</head>
+<body>
+	<nav class="navbar navbar-light bg-light">
+	  <span class="navbar-brand mb-0 h1">Taskapp</span>
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			{% for userSetup in userSetups %}
+			<div class="col-md-12">
+				<div class="card">
+					<h1 class="card-title">{{userSetup.company.name}}</h1>
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-md-4">
+								<div class="card">
+									<h2 class="card-title">Score</h2>
+									<p class="card-text">Your score is: <b>{{userSetup.score}}</b></p>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="card">
+									<h2 class="card-title">Your tasks</h2>
+									<ul class="list-group list-group-flush">
+										{% for task in userSetup.companyTasks %}
+										<li class="list-group-item">
+											{{task.title}}
+											<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
+											{% if task.penalty != None %}
+											<span class="badge badge-danger" title="Penalty score">{{task.penalty}}</span>
+											{% endif %}
+											{% if task.deadline != None %}
+											<span class="badge badge-warning" title="Deadline">{{task.deadline|date:"Y-m-d H:i"}}</span> 
+											{% endif %}
+											
+											<a href="complete/{{task.id}}">(complete)</a>
+										</li>
+										{% endfor %}
+									</ul>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="card">
+									<h2 class="card-title">General tasks</h2>
+									<ul class="list-group list-group-flush">
+										{% for task in userSetup.freeTasks %}
+										<li class="list-group-item">
+											{{task.title}}
+											<a href="complete/{{task.id}}">(complete)</a>
+										</li>
+										{% endfor %}
+										
+									</ul>
+								</div>
+							</div>
+						</div> <!-- row -->
+					</div> <!-- container -->
+				</div> <!-- company card -->
+			</div> <!-- col-md-12 -->
+			{% endfor %}
+		</div>
+	</div>
+</body>
+</html>
