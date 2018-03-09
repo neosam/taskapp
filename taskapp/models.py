@@ -79,7 +79,7 @@ class UserSetup(models.Model):
 class UserScoreHistory(models.Model):
 	user = models.ForeignKey(UserSetup, on_delete = models.CASCADE)
 	score = models.FloatField()
-	score_delta = models.IntegerField()
+	score_delta = models.FloatField()
 	message = models.CharField(max_length = 1000)
 	created = models.DateTimeField(auto_now = True)
 	def __str__(self):
