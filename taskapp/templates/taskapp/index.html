@@ -29,6 +29,7 @@
 									<ul class="list-group list-group-flush">
 										{% for task in userSetup.companyTasks %}
 										<li class="list-group-item">
+											{% if task.regular != None %}(R){% endif %}
 											{{task.title}}
 											<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
 											{% if task.penalty != None %}
@@ -50,7 +51,9 @@
 									<ul class="list-group list-group-flush">
 										{% for task in userSetup.freeTasks %}
 										<li class="list-group-item">
+											{% if task.regular != None %}(R){% endif %}
 											{{task.title}}
+											<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
 											<a href="complete/{{task.id}}">(complete)</a>
 										</li>
 										{% endfor %}

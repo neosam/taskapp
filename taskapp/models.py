@@ -21,9 +21,9 @@ class CompanyTask(models.Model):
 		if self.penalty != None and userSetup.id != self.assignment.id:
 			self.assignment.modify_score(-self.penalty, "Task " + self.title + " compelted by " + userSetup.user.username)
 		# Assign new deadline on regular tasks
-		if self.regular != None:
-			self.deadline = datetime.datetime.now() + self.regular
-		else:
+		if self.regular != None and self.regular.total_seconds() > 0:
+				self.deadline = datetime.datetime.now() + self.regular
+		if self.regular == None:
 			self.finished = True
 		# Add score to user who completed the task
 		userSetup.modify_score(self.score, "Completed task: " + self.title)
@@ -37,7 +37,7 @@ class CompanyTask(models.Model):
 		userSetup = UserSetup.objects.get(user = user)
 		return CompanyTask.get_open_tasks().filter(assignment = userSetup)
 	def get_open_for_company(company):
-		return CompanyTask.get_open_tasks().filter(company = company)
+		return CompanyTask.get_open_tasks().filter(company = company, assignment = None)
 
 
 
