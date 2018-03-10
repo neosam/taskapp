@@ -75,8 +75,19 @@
 							</div>
 							<div class="col-md-4">
 								<div class="card">
-
-										
+									<div class="card-header">History</div>
+									<div class="card-body">
+										<ul class="list-group list-group-flush">
+											{% for item in userSetup.history_vals %}
+											<li class="list-group-item">
+												<span class="badge badge-warning">{{item.created|date:"Y-m-d H:i"}}</span>
+												<span class="badge badge-success">{{item.score}}</span>
+												{{item.message}}
+												
+											</li>
+											{% endfor %}
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div> <!-- row -->

@@ -14,6 +14,7 @@ def index(request):
 		userSetup.companyTasks = CompanyTask.get_open_for_user_setup(userSetup)
 		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company)
 		userSetup.users = UserSetup.get_rank_by_company(company = userSetup.company)
+		userSetup.history_vals = userSetup.history(10)
 	return render(request, "taskapp/index.html", {'userSetups': userSetups})
 
 @login_required(login_url="/accounts/login")

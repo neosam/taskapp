@@ -66,11 +66,15 @@ class UserSetup(models.Model):
     def modify_score(self, score_delta, message):
     	self.score += score_delta
     	newUserScore = UserScoreHistory(
+    			message = message,
     			user = self,
     			score = self.score,
     			score_delta = score_delta)
     	newUserScore.save()
     	self.save()
+
+    def history(self, amount):
+    	return UserScoreHistory.objects.filter(user = self).order_by('-created')[0:amount]
 
     def get_rank_by_company(company):
     	return UserSetup.objects.filter(company = company).order_by('-score')
@@ -84,6 +88,7 @@ class UserScoreHistory(models.Model):
 	created = models.DateTimeField(auto_now = True)
 	def __str__(self):
 		return str(self.user) + ": " + self.message[0:80] + " - (" + str(self.score) + ", " + str(self.score_delta) + ")"
+
 
 
 
