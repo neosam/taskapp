@@ -21,59 +21,62 @@
 						<div class="row">
 							<div class="col-md-4">
 								<div class="card">
-									<h2 class="card-title">Score</h2>
-									<p class="card-text">Your score is: <b>{{userSetup.score}}</b></p>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="card">
-									<h2 class="card-title">Your tasks</h2>
-									<ul class="list-group list-group-flush">
-										{% for task in userSetup.companyTasks %}
-										<li class="list-group-item">
-											{% if task.regular != None %}(R){% endif %}
-											{{task.title}}
-											<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
-											{% if task.penalty != None %}
-											<span class="badge badge-danger" title="Penalty score">{{task.penalty}}</span>
-											{% endif %}
-											{% if task.deadline != None %}
-											<span class="badge badge-warning" title="Deadline">{{task.deadline|date:"Y-m-d H:i"}}</span> 
-											{% endif %}
+									<div class="card-header">Score</div>
+									<div class="card-body">
+										<h2 class="card-title">Your Score</h2>
+										<p class="card-text">Your score is: <b>{{userSetup.score}}</b></p>
+										<h2 class="card-title">User ranks</h2>
+										<ul class="list-group list-group-flush">
+											{% for userSetup in userSetup.users %}
+											<li class="list-group-item">
+												{{userSetup.user.username}}, {{userSetup.score}}
+											</li>
+											{% endfor %}
 											
-											<a href="complete/{{task.id}}">(complete)</a>
-										</li>
-										{% endfor %}
-									</ul>
+										</ul>
+									</div>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="card">
-									<h2 class="card-title">General tasks</h2>
-									<ul class="list-group list-group-flush">
-										{% for task in userSetup.freeTasks %}
-										<li class="list-group-item">
-											{% if task.regular != None %}(R){% endif %}
-											{{task.title}}
-											<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
-											<a href="complete/{{task.id}}">(complete)</a>
-										</li>
-										{% endfor %}
-										
-									</ul>
+									<div class="card-header">Tasks</div>
+									<div class="card-body">
+										<h2 class="card-title">For you</h2>
+										<ul class="list-group list-group-flush">
+											{% for task in userSetup.companyTasks %}
+											<li class="list-group-item">
+												{% if task.regular != None %}(R){% endif %}
+												{{task.title}}
+												<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
+												{% if task.penalty != None %}
+												<span class="badge badge-danger" title="Penalty score">{{task.penalty}}</span>
+												{% endif %}
+												{% if task.deadline != None %}
+												<span class="badge badge-warning" title="Deadline">{{task.deadline|date:"Y-m-d H:i"}}</span> 
+												{% endif %}
+												
+												<a href="complete/{{task.id}}">(complete)</a>
+											</li>
+											{% endfor %}
+										</ul>
+																			<h2 class="card-title">General tasks</h2>
+										<ul class="list-group list-group-flush">
+											{% for task in userSetup.freeTasks %}
+											<li class="list-group-item">
+												{% if task.regular != None %}(R){% endif %}
+												{{task.title}}
+												<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
+												<a href="complete/{{task.id}}">(complete)</a>
+											</li>
+											{% endfor %}
+										</ul>
+									</div>
 								</div>
 							</div>
 							<div class="col-md-4">
 								<div class="card">
-									<h2 class="card-title">User ranks</h2>
-									<ul class="list-group list-group-flush">
-										{% for userSetup in userSetup.users %}
-										<li class="list-group-item">
-											{{userSetup.user.username}}, {{userSetup.score}}
-										</li>
-										{% endfor %}
+
 										
-									</ul>
 								</div>
 							</div>
 						</div> <!-- row -->
