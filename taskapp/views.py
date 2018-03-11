@@ -50,7 +50,22 @@ def new_task(request, company_id):
 			return redirect('..')
 	else:
 		form = TaskForm(instance = task)
-	return render(request, 'taskapp/task.html', {'form': form, 'action': 'new'})
+	return render(request, 'taskapp/task.html', {'form': form, 'action': '../new-task/' + str(company_id)})
+
+@login_required(login_url="/accounts/login")
+def new_user_task(request, user_setup_id):
+	user_setup = get_object_or_404(UserSetup.objects, id = user_setup_id)
+	company = user_setup.company
+	task = CompanyTask(company = company, assignment = user_setup)
+	if request.method == 'POST':
+		form = TaskForm(request.POST, instance = task)
+		if form.is_valid():
+			# TODO:  Check if user is allowed to add a task
+			form.save()
+			return redirect('../user-setup-details/' + str(user_setup.id))
+	else:
+		form = TaskForm(instance = task)
+	return render(request, 'taskapp/task.html', {'form': form, 'action': '../new-user-task/' + str(user_setup_id)})
 
 @login_required(login_url="/accounts/login")
 def user_setup_details(request, user_setup_id):
@@ -75,7 +90,5 @@ def mod_score(request, user_setup_id):
 	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
 	dest_user_setup.modify_score(score, src_user_setup.user.username + " modification: " + message)
 	return redirect('../user-setup-details/' + str(dest_user_setup.id))
-
-
 
 

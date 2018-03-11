@@ -17,7 +17,7 @@
 				<div class="card">
 					<div class="card-header">Edit task</div>
 					<div class="card-body">
-						<form action="{{task.id}}" method="post">
+						<form action="{{action}}" method="post">
 							{% csrf_token %}
 							{{ form.as_p }}
 							<input type="Submit" value="Save"/>
