@@ -55,5 +55,32 @@ def new_task(request, company_id):
 @login_required(login_url="/accounts/login")
 def user_setup_details(request, user_setup_id):
 	user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
-	user_setup.history_vals = user_setup.history(10)
+	user_setup.history_vals = user_setup.history(100)
 	return render(request, 'taskapp/user-setup-details.html', {'user_setup': user_setup})
+
+@login_required(login_url="/accounts/login")
+def revert_history_item(request, history_id):
+	# TODO: Check permissions
+	history_item = get_object_or_404(UserScoreHistory.objects, id=history_id)
+	history_item.user.modify_score(-history_item.score_delta, request.user.username + " reverted: " + history_item.message)
+	return redirect('../user-setup-details/' + str(history_item.user.id))
+
+def mod_score(request, user_setup_id):
+	# TODO: Check permissions
+	if request.method != 'POST':
+		return redirect('../user-setup-details/' + str(dest_user_setup.id))
+	score = int(request.POST['score'])
+	src_user_setup = get_object_or_404(UserSetup.objects, user = request.user)
+	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
+	if score > 0:
+		mod_type = 'bonus'
+	elif score < 0:
+		mod_type = 'reduction'
+	else:
+		return redirect('../user-setup-details/' + str(dest_user_setup.id))
+	dest_user_setup.modify_score(score, src_user_setup.user.username + "'s score " + mod_type)
+	return redirect('../user-setup-details/' + str(dest_user_setup.id))
+
+
+
+

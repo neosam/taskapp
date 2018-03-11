@@ -24,6 +24,12 @@
 										<div class="card-header">Score</div>
 										<div class="card-body">
 											<h2 class="card-title">{{user_setup.user.username}}'s score is {{user_setup.score}}</h2>
+											<form action="../mod-score/{{user_setup.id}}" method="post">
+												{% csrf_token %}
+												<label for="score">Adjust score</label>
+												<input type="number" name="score"/>
+												<input type="submit"/>
+											</form>
 										</div>
 									</div>
 								</div>
@@ -37,6 +43,7 @@
 													<span class="badge badge-warning">{{item.created|date:"Y-m-d H:i"}}</span>
 													<span class="badge badge-success">{{item.score}}</span>
 													{{item.message}}
+													<a href="../revert-history-item/{{item.id}}">(revert)</a>
 												</li>
 												{% endfor %}
 											</ul>
