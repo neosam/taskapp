@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, get_object_or_404
 
 from .models import *
+from .forms import *
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -23,3 +24,15 @@ def complete(request, task_id):
 	user = get_object_or_404(UserSetup, user=request.user, company = task.company)
 	task.complete(user)
 	return redirect('..')
+
+@login_required(login_url="/accounts/login")
+def edit_task(request, task_id):
+	task = get_object_or_404(CompanyTask.objects, id = task_id)
+	if request.method == 'POST':
+		form = TaskForm(request.POST, instance = task)
+		if form.is_valid():
+			form.save()
+			return redirect('..')
+	else:
+		form = TaskForm(instance = task)
+	return render(request, 'taskapp/task.html', {'form': form})

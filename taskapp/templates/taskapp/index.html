@@ -29,7 +29,7 @@
 										<ul class="list-group list-group-flush">
 											{% for userSetup in userSetup.users %}
 											<li class="list-group-item">
-												{{userSetup.user.username}}, {{userSetup.score}}
+												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score}}</span> {{userSetup.user.username}}
 											</li>
 											{% endfor %}
 											
@@ -56,6 +56,7 @@
 												{% endif %}
 												
 												<a href="complete/{{task.id}}">(complete)</a>
+												<a href="edit-task/{{task.id}}">(edit)</a>
 											</li>
 											{% endfor %}
 										</ul>
@@ -67,6 +68,7 @@
 												{{task.title}}
 												<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
 												<a href="complete/{{task.id}}">(complete)</a>
+												<a href="edit-task/{{task.id}}">(edit)</a>
 											</li>
 											{% endfor %}
 										</ul>
