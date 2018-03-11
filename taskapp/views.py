@@ -86,8 +86,8 @@ def mod_score(request, user_setup_id):
 		return redirect('../user-setup-details/' + str(dest_user_setup.id))
 	score = int(request.POST['score'])
 	message = request.POST['message']
-	src_user_setup = get_object_or_404(UserSetup.objects, user = request.user)
 	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
+	src_user_setup = get_object_or_404(UserSetup.objects, user = request.user, company = dest_user_setup.company)
 	dest_user_setup.modify_score(score, src_user_setup.user.username + " modification: " + message)
 	return redirect('../user-setup-details/' + str(dest_user_setup.id))
 
