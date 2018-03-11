@@ -27,6 +27,7 @@ def complete(request, task_id):
 
 @login_required(login_url="/accounts/login")
 def edit_task(request, task_id):
+	# TODO:  Security check if is allowed to edit the task
 	task = get_object_or_404(CompanyTask.objects, id = task_id)
 	if request.method == 'POST':
 		form = TaskForm(request.POST, instance = task)
@@ -35,4 +36,19 @@ def edit_task(request, task_id):
 			return redirect('..')
 	else:
 		form = TaskForm(instance = task)
-	return render(request, 'taskapp/task.html', {'form': form})
+	return render(request, 'taskapp/task.html', {'form': form, 'action': str(task_id)})
+
+@login_required(login_url="/accounts/login")
+def new_task(request, company_id):
+	company = get_object_or_404(Company.objects, id = company_id)
+	task = CompanyTask(company = company)
+	if request.method == 'POST':
+		form = TaskForm(request.POST, instance = task)
+		if form.is_valid():
+			# TODO:  Check if user is allowed to add a task
+			form.save()
+			return redirect('..')
+	else:
+		form = TaskForm(instance = task)
+	return render(request, 'taskapp/task.html', {'form': form, 'action': 'new'})
+
