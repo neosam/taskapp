@@ -26,8 +26,14 @@
 											<h2 class="card-title">{{user_setup.user.username}}'s score is {{user_setup.score}}</h2>
 											<form action="../mod-score/{{user_setup.id}}" method="post">
 												{% csrf_token %}
-												<label for="score">Adjust score</label>
-												<input type="number" name="score"/>
+												<p>
+													<label for="score">Adjust score</label>
+													<input type="number" name="score"/>
+												</p>
+												<p>
+													<label for="message">Message</label>
+													<input name="message"/>
+												</p>
 												<input type="submit"/>
 											</form>
 										</div>
