@@ -52,3 +52,8 @@ def new_task(request, company_id):
 		form = TaskForm(instance = task)
 	return render(request, 'taskapp/task.html', {'form': form, 'action': 'new'})
 
+@login_required(login_url="/accounts/login")
+def user_setup_details(request, user_setup_id):
+	user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
+	user_setup.history_vals = user_setup.history(10)
+	return render(request, 'taskapp/user-setup-details.html', {'user_setup': user_setup})

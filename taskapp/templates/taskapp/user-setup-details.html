@@ -1,0 +1,54 @@
+{% load static %}
+
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Test</title>
+	<link rel="stylesheet" type="text/css" href="{% static 'taskapp/css/bootstrap.min.css'%}"/>
+</head>
+<body>
+	<nav class="navbar navbar-light bg-light">
+	  <span class="navbar-brand mb-0 h1">Taskapp</span>
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">Details for {{user_setup.user.username}} at {{user_setup.company.name}}</div>
+					<div class="card-body">
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="card">
+										<div class="card-header">Score</div>
+										<div class="card-body">
+											<h2 class="card-title">{{user_setup.user.username}}'s score is {{user_setup.score}}</h2>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card">
+										<div class="card-header">User history</div>
+										<div class="card-body">
+											<ul class="list-group list-group-flush">
+												{% for item in user_setup.history_vals %}
+												<li class="list-group-item">
+													<span class="badge badge-warning">{{item.created|date:"Y-m-d H:i"}}</span>
+													<span class="badge badge-success">{{item.score}}</span>
+													{{item.message}}
+												</li>
+												{% endfor %}
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> <!-- company card -->
+			</div> <!-- col-md-12 -->
+		</div>
+	</div>
+</body>
+</html>

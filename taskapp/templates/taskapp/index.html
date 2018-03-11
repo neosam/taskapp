@@ -29,7 +29,8 @@
 										<ul class="list-group list-group-flush">
 											{% for userSetup in userSetup.users %}
 											<li class="list-group-item">
-												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score}}</span> {{userSetup.user.username}}
+												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score}}</span>
+												<a href="user-setup-details/{{userSetup.id}}">{{userSetup.user.username}}</a>
 											</li>
 											{% endfor %}
 											
