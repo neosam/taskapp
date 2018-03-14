@@ -54,6 +54,12 @@ class Company(models.Model):
     name = models.CharField(max_length=1000)
     def __str__(self):
     	return self.name
+
+    def all_user_history(self, duration):
+    	user_setups = UserSetup.objects.filter(company = self)
+    	for user_setup in user_setups:
+    		user_setup.history_vals = user_setup.history_for_duration(duration)
+    	return user_setups
         
 
 class UserSetup(models.Model):
@@ -76,8 +82,12 @@ class UserSetup(models.Model):
     def history(self, amount):
     	return UserScoreHistory.objects.filter(user = self).order_by('-created')[0:amount]
 
+    def history_for_duration(self, duration):
+    	return UserScoreHistory.objects.filter(user = self).filter(created__gt = datetime.datetime.now() - duration).order_by('-created')
+
     def get_rank_by_company(company):
     	return UserSetup.objects.filter(company = company).order_by('-score')
+
 
 
 class UserScoreHistory(models.Model):

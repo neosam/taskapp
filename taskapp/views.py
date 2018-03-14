@@ -6,6 +6,8 @@ from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
 
+import datetime
+
 # Create your views here.
 @login_required(login_url="/accounts/login")
 def index(request):
@@ -16,6 +18,7 @@ def index(request):
 		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company).order_by('title')
 		userSetup.users = UserSetup.get_rank_by_company(company = userSetup.company)
 		userSetup.history_vals = userSetup.history(10)
+		userSetup.all_user_history = userSetup.company.all_user_history(datetime.timedelta(7))
 	return render(request, "taskapp/index.html", {'userSetups': userSetups})
 
 @login_required(login_url="/accounts/login")

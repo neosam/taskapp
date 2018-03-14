@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Taskapp</title>
 	<link rel="stylesheet" type="text/css" href="{% static 'taskapp/css/bootstrap.min.css'%}"/>
+	<script type="text/javascript" src="{% static 'taskapp/js/plotly-latest.min.js' %}"></script>
 </head>
 <body>
 	<nav class="navbar navbar-light bg-light">
@@ -91,6 +92,39 @@
 											{% endfor %}
 										</ul>
 									</div>
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="card">
+									<div class="card-header">Plot</div>
+									<div class="card-body">
+										<div id="history-plot"/>
+											
+									</div>
+									<script type="text/javascript">
+										(function() {
+											var data = [
+												{% for userSetup in userSetup.all_user_history %}
+													{
+													name: "{{userSetup.user.username}}",
+													y: [
+														{% for item in userSetup.history_vals %}
+															
+															{{item.score}},
+															
+														{% endfor %}
+														],
+													x: [
+														{% for item in userSetup.history_vals %}
+															'{{item.created|date:"Y-m-d H:i"}}',
+														{% endfor %}
+														],
+													type: 'scatter'},
+												{% endfor %}
+											];
+											Plotly.newPlot('history-plot', data);
+										})();
+									</script>
 								</div>
 							</div>
 						</div> <!-- row -->
