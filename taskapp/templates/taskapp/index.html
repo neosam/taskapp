@@ -26,12 +26,12 @@
 									<div class="card-header">Score</div>
 									<div class="card-body">
 										<h2 class="card-title">Your Score</h2>
-										<p class="card-text">Your score is: <b>{{userSetup.score}}</b></p>
+										<p class="card-text">Your score is: <b>{{userSetup.score | floatformat:-2}}</b></p>
 										<h2 class="card-title">User ranks</h2>
 										<ul class="list-group list-group-flush">
 											{% for userSetup in userSetup.users %}
 											<li class="list-group-item">
-												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score}}</span>
+												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score | floatformat:-2}}</span>
 												<a href="user-setup-details/{{userSetup.id}}">{{userSetup.user.username}}</a>
 											</li>
 											{% endfor %}
@@ -50,9 +50,9 @@
 											<li class="list-group-item">
 												{% if task.regular != None %}(R){% endif %}
 												{{task.title}}
-												<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
+												<span class="badge badge-success" title="Bonus score">{{task.score | floatformat:-2}}</span>
 												{% if task.penalty != None %}
-												<span class="badge badge-danger" title="Penalty score">{{task.penalty}}</span>
+												<span class="badge badge-danger" title="Penalty score">{{task.penalty | floatformat:-2}}</span>
 												{% endif %}
 												{% if task.deadline != None %}
 												<span class="badge badge-warning" title="Deadline">{{task.deadline|date:"Y-m-d H:i"}}</span> 
@@ -69,7 +69,7 @@
 											<li class="list-group-item">
 												{% if task.regular != None %}(R){% endif %}
 												{{task.title}}
-												<span class="badge badge-success" title="Bonus score">{{task.score}}</span>
+												<span class="badge badge-success" title="Bonus score">{{task.score | floatformat:-2}}</span>
 												<a href="complete/{{task.id}}">(complete)</a>
 												<a href="edit-task/{{task.id}}">(edit)</a>
 											</li>
@@ -86,7 +86,7 @@
 											{% for item in userSetup.history_vals %}
 											<li class="list-group-item">
 												<span class="badge badge-warning">{{item.created|date:"Y-m-d H:i"}}</span>
-												<span class="badge badge-success">{{item.score}}</span>
+												<span class="badge badge-success">{{item.score | floatformat:-2}}</span>
 												{{item.message}}
 												
 											</li>
@@ -111,7 +111,7 @@
 													y: [
 														{% for item in userSetup.history_vals %}
 															
-															{{item.score}},
+															{{item.score | floatformat:-2}},
 															
 														{% endfor %}
 														],
