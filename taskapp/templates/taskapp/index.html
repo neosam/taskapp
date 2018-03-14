@@ -120,6 +120,11 @@
 															'{{item.created|date:"Y-m-d H:i"}}',
 														{% endfor %}
 														],
+													text: [
+														{% for item in userSetup.history_vals %}
+															'{{item.message}}',
+														{% endfor %}
+													],
 													type: 'scatter'},
 												{% endfor %}
 											];
