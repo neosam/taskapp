@@ -5,6 +5,7 @@ from django.shortcuts import redirect, get_object_or_404
 from .models import *
 from .forms import *
 from django.contrib.auth.decorators import login_required
+from django.contrib import auth
 
 import datetime
 
@@ -93,5 +94,9 @@ def mod_score(request, user_setup_id):
 	src_user_setup = get_object_or_404(UserSetup.objects, user = request.user, company = dest_user_setup.company)
 	dest_user_setup.modify_score(score, src_user_setup.user.username + " modification: " + message)
 	return redirect('../user-setup-details/' + str(dest_user_setup.id))
+
+def logout(request):
+	auth.logout(request)
+	return redirect('./')
 
 
