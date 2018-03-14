@@ -98,7 +98,7 @@
 								<div class="card">
 									<div class="card-header">Plot</div>
 									<div class="card-body">
-										<div id="history-plot"/>
+										<div id="history-plot{{userSetup.company.id}}"/>
 											
 									</div>
 									<script type="text/javascript">
@@ -122,7 +122,7 @@
 													type: 'scatter'},
 												{% endfor %}
 											];
-											Plotly.newPlot('history-plot', data);
+											Plotly.newPlot('history-plot{{userSetup.company.id}}', data);
 										})();
 									</script>
 								</div>
