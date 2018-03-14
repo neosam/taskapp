@@ -12,8 +12,8 @@ def index(request):
 	user = request.user
 	userSetups = UserSetup.objects.filter(user=user)
 	for userSetup in userSetups:
-		userSetup.companyTasks = CompanyTask.get_open_for_user_setup(userSetup)
-		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company)
+		userSetup.companyTasks = CompanyTask.get_open_for_user_setup(userSetup).order_by('title')
+		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company).order_by('title')
 		userSetup.users = UserSetup.get_rank_by_company(company = userSetup.company)
 		userSetup.history_vals = userSetup.history(10)
 	return render(request, "taskapp/index.html", {'userSetups': userSetups})
