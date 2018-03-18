@@ -134,7 +134,8 @@ def json_data(request, user_id):
 		for history_item in user_setup.history(100):
 			history.append({
 				'score': history_item.score,
-				'message': history_item.message
+				'message': history_item.message,
+				'created': history_item.created.strftime('%Y-%m-%d %H:%M')
 				})
 		item['name'] = user_setup.company.name
 		item['companyTasks'] = company_tasks
