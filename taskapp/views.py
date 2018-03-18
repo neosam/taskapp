@@ -11,6 +11,12 @@ from django.contrib import auth
 
 import datetime
 
+def default_on_none(value, default_value):
+	if value == None:
+		return default_value
+	else:
+		return value
+
 # Create your views here.
 @login_required(login_url="/accounts/login")
 def index(request):
@@ -115,17 +121,17 @@ def json_data(request, user_id):
 			company_tasks.append({
 				'title': task.title,
 				'score': task.score,
-				'penalty': task.penalty
+				'penalty': default_on_none(task.penalty, 0)
 			})
 		user_tasks = []
 		for task in CompanyTask.get_open_for_user_setup(user_setup):
 			user_tasks.append({
 				'title': task.title,
 				'score': task.score,
-				'penalty': task.penalty
+				'penalty': default_on_none(task.penalty, 0)
 			})
 		item['name'] = user_setup.company.name
-		item['copmanyTasks'] = company_tasks
+		item['companyTasks'] = company_tasks
 		item['userTasks'] = user_tasks
 	result['companies'] = companies
 	return JsonResponse(result)
