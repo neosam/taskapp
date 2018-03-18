@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, get_object_or_404
+from django.core import serializers
+from django.contrib.auth.models import User
 
 from .models import *
 from .forms import *
@@ -98,5 +100,34 @@ def mod_score(request, user_setup_id):
 def logout(request):
 	auth.logout(request)
 	return redirect('./')
+
+def json_data(request, user_id):
+	user = User.objects.get(id=user_id)
+	user_setups = UserSetup.objects.filter(user=user)
+	result = {}
+	companies = []
+	for user_setup in user_setups:
+		item = {}
+		item['score'] = user_setup.score
+		companies.append(item)
+		company_tasks = []
+		for task in CompanyTask.get_open_for_company(user_setup.company):
+			company_tasks.append({
+				'title': task.title,
+				'score': task.score,
+				'penalty': task.penalty
+			})
+		user_tasks = []
+		for task in CompanyTask.get_open_for_user_setup(user_setup):
+			user_tasks.append({
+				'title': task.title,
+				'score': task.score,
+				'penalty': task.penalty
+			})
+		item['name'] = user_setup.company.name
+		item['copmanyTasks'] = company_tasks
+		item['userTasks'] = user_tasks
+	result['companies'] = companies
+	return JsonResponse(result)
 
 
