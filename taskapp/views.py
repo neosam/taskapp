@@ -130,9 +130,16 @@ def json_data(request, user_id):
 				'score': task.score,
 				'penalty': default_on_none(task.penalty, 0)
 			})
+		history = []
+		for history_item in user_setup.history(100):
+			history.append({
+				'score': history_item.score,
+				'message': history_item.message
+				})
 		item['name'] = user_setup.company.name
 		item['companyTasks'] = company_tasks
 		item['userTasks'] = user_tasks
+		item['history'] = history
 	result['companies'] = companies
 	return JsonResponse(result)
 
