@@ -107,8 +107,11 @@ def logout(request):
 	auth.logout(request)
 	return redirect('./')
 
-def json_data(request, user_id):
-	user = User.objects.get(id=user_id)
+def json_data(request):
+	username = request.GET['username']
+	password = request.GET['password']
+	user = auth.authenticate(username = username, password = password)
+
 	user_setups = UserSetup.objects.filter(user=user)
 	result = {}
 	companies = []
@@ -119,6 +122,7 @@ def json_data(request, user_id):
 		company_tasks = []
 		for task in CompanyTask.get_open_for_company(user_setup.company):
 			company_tasks.append({
+				'id': task.id,
 				'title': task.title,
 				'score': task.score,
 				'penalty': default_on_none(task.penalty, 0)
@@ -126,6 +130,7 @@ def json_data(request, user_id):
 		user_tasks = []
 		for task in CompanyTask.get_open_for_user_setup(user_setup):
 			user_tasks.append({
+				'id': task.id,
 				'title': task.title,
 				'score': task.score,
 				'penalty': default_on_none(task.penalty, 0)
@@ -161,6 +166,17 @@ def json_login(request):
 			'username': username,
 			'userId': user.id
 		})
+
+def json_complete_task(request, task_id):
+	username = request.GET['username']
+	password = request.GET['password']
+
+	user = auth.authenticate(username = username, password = password)
+	task = CompanyTask.objects.get(id = task_id)
+	user_setup = UserSetup.objects.get(user = user, company = task.company)
+	task.complete(user_setup)
+	return JsonResponse({'success': True})
+
 	
 
 
