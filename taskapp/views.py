@@ -144,4 +144,25 @@ def json_data(request, user_id):
 	result['companies'] = companies
 	return JsonResponse(result)
 
+def json_login(request):
+	username = request.GET['username']
+	password = request.GET['password']
+
+	user = auth.authenticate(username = username, password = password)
+	if user == None:
+		return JsonResponse({
+			'success': False,
+			'username': username,
+			'userId': -1
+		})
+	else:
+		return JsonResponse({
+			'success': True,
+			'username': username,
+			'userId': user.id
+		})
+	
+
+
+
 

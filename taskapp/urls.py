@@ -14,6 +14,7 @@ urlpatterns = [
     path('revert-history-item/<int:history_id>', views.revert_history_item, name='revert_history_item'),
     path('mod-score/<int:user_setup_id>', views.mod_score, name='mod_score'),
     path('json-data/<int:user_id>', views.json_data, name='json_data'),
+    path('json-verify-login', views.json_login, name="json_login"),
     
 
 ]
