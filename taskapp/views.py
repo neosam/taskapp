@@ -142,10 +142,20 @@ def json_data(request):
 				'message': history_item.message,
 				'created': history_item.created.strftime('%Y-%m-%d %H:%M')
 				})
+		user_rank = []
+		i = 0
+		for user_setup in UserSetup.get_rank_by_company(company = user_setup.company):
+			i += 1
+			user_rank.append({
+				'rank': i,
+				'username': user_setup.user.username,
+				'score': user_setup.score
+			})
 		item['name'] = user_setup.company.name
 		item['companyTasks'] = company_tasks
 		item['userTasks'] = user_tasks
 		item['history'] = history
+		item['userRank'] = user_rank
 	result['companies'] = companies
 	return JsonResponse(result)
 
@@ -177,7 +187,7 @@ def json_complete_task(request, task_id):
 	task.complete(user_setup)
 	return JsonResponse({'success': True})
 
-	
+
 
 
 
