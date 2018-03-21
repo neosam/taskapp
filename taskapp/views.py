@@ -120,7 +120,7 @@ def json_data(request):
 		item['score'] = user_setup.score
 		companies.append(item)
 		company_tasks = []
-		for task in CompanyTask.get_open_for_company(user_setup.company):
+		for task in CompanyTask.get_open_for_company(user_setup.company).order_by('title'):
 			company_tasks.append({
 				'id': task.id,
 				'title': task.title,
@@ -128,7 +128,7 @@ def json_data(request):
 				'penalty': default_on_none(task.penalty, 0)
 			})
 		user_tasks = []
-		for task in CompanyTask.get_open_for_user_setup(user_setup):
+		for task in CompanyTask.get_open_for_user_setup(user_setup).order_by('title'):
 			user_tasks.append({
 				'id': task.id,
 				'title': task.title,
