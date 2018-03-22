@@ -18,7 +18,7 @@ class CompanyTask(models.Model):
 
 	def complete(self, userSetup):
 		# Check if someone else did the work
-		if self.penalty != None and userSetup.id != self.assignment.id:
+		if self.penalty != None and self.assignment != None and userSetup.id != self.assignment.id:
 			self.assignment.modify_score(-self.penalty, "Task " + self.title + " compelted by " + userSetup.user.username)
 		# Assign new deadline on regular tasks
 		if self.regular != None and self.regular.total_seconds() > 0:
