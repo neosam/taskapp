@@ -118,6 +118,7 @@ def json_data(request):
 	for user_setup in user_setups:
 		item = {}
 		item['score'] = user_setup.score
+		item['companyId'] = user_setup.company.id
 		companies.append(item)
 		company_tasks = []
 		for task in CompanyTask.get_open_for_company(user_setup.company).order_by('title'):
@@ -186,6 +187,27 @@ def json_complete_task(request, task_id):
 	user_setup = UserSetup.objects.get(user = user, company = task.company)
 	task.complete(user_setup)
 	return JsonResponse({'success': True})
+
+def json_edit_task(request, task_id):
+	username = request.GET['username']
+	password = request.GET['password']
+
+	user = auth.authenticate(username = username, password = password)
+	# TODO Check if user can edit the task
+	if task_id <= 0:
+		task = CompanyTask()
+		company = Company.objects.get(id=int(request.GET['company']))
+		task.company = company
+	else:
+		task = CompanyTask.objects.get(id = task_id)
+	new_title = request.GET['title']
+	new_score = float(request.GET['score'])
+	new_penalty = float(request.GET['penalty'])
+	task.title = new_title
+	task.score = new_score
+	task.penalty = new_penalty
+	task.save()
+	return JsonResponse({'success': True}) 
 
 
 

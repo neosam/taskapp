@@ -15,7 +15,8 @@ urlpatterns = [
     path('mod-score/<int:user_setup_id>', views.mod_score, name='mod_score'),
     path('json-data', views.json_data, name='json_data'),
     path('json-verify-login', views.json_login, name="json_login"),
-    path('json-complete-task/<int:task_id>', views.json_complete_task)
+    path('json-complete-task/<int:task_id>', views.json_complete_task),
+    path('json-edit-task/<int:task_id>', views.json_edit_task)
     
 
 ]
