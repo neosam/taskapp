@@ -127,7 +127,8 @@ def json_data(request):
 				'id': task.id,
 				'title': task.title,
 				'score': task.score,
-				'penalty': default_on_none(task.penalty, 0)
+				'penalty': default_on_none(task.penalty, 0),
+				'regular': task.regular != None
 			})
 		user_tasks = []
 		for task in CompanyTask.get_open_for_user_setup(user_setup).order_by('title'):
@@ -135,7 +136,8 @@ def json_data(request):
 				'id': task.id,
 				'title': task.title,
 				'score': task.score,
-				'penalty': default_on_none(task.penalty, 0)
+				'penalty': default_on_none(task.penalty, 0),
+				'regular': task.regular != None
 			})
 		history = []
 		for history_item in user_setup.history(100):
@@ -173,7 +175,8 @@ def json_data_company(request, usersetup_id):
 			'id': task.id,
 			'title': task.title,
 			'score': task.score,
-			'penalty': default_on_none(task.penalty, 0)
+			'penalty': default_on_none(task.penalty, 0),
+			'regular': task.regular != None
 		})
 	user_tasks = []
 	for task in CompanyTask.get_open_for_user_setup(user_setup).order_by('title'):
@@ -181,7 +184,8 @@ def json_data_company(request, usersetup_id):
 			'id': task.id,
 			'title': task.title,
 			'score': task.score,
-			'penalty': default_on_none(task.penalty, 0)
+			'penalty': default_on_none(task.penalty, 0),
+			'regular': task.regular != None
 		})
 	history = []
 	for history_item in user_setup.history(100):
@@ -216,7 +220,8 @@ def json_data_tasklist(request, company_id):
 			'id': task.id,
 			'title': task.title,
 			'score': task.score,
-			'penalty': default_on_none(task.penalty, 0)
+			'penalty': default_on_none(task.penalty, 0),
+			'regular': task.regular != None
 		})
 	result['tasks'] = tasks
 	return JsonResponse(result)
@@ -230,7 +235,8 @@ def json_data_usersetup(request, usersetup_id):
 			'id': task.id,
 			'title': task.title,
 			'score': task.score,
-			'penalty': default_on_none(task.penalty, 0)
+			'penalty': default_on_none(task.penalty, 0),
+			'regular': task.regular != None
 		})
 	result['tasks'] = tasks
 	return JsonResponse(result)
@@ -278,9 +284,16 @@ def json_edit_task(request, task_id):
 	new_title = request.GET['title']
 	new_score = float(request.GET['score'])
 	new_penalty = float(request.GET['penalty'])
+	new_regular_bool = request.GET['regular'] == 'True'
+	if new_regular_bool == True:
+		new_regular = datetime.timedelta(0)
+	else:
+		print("Regular is false")
+		new_regular = None
 	task.title = new_title
 	task.score = new_score
 	task.penalty = new_penalty
+	task.regular = new_regular
 	task.save()
 	return JsonResponse({'success': True}) 
 
