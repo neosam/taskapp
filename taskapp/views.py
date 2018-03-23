@@ -119,6 +119,7 @@ def json_data(request):
 		item = {}
 		item['score'] = user_setup.score
 		item['companyId'] = user_setup.company.id
+		item['userSetupId'] = user_setup.id
 		companies.append(item)
 		company_tasks = []
 		for task in CompanyTask.get_open_for_company(user_setup.company).order_by('title'):
@@ -158,6 +159,80 @@ def json_data(request):
 		item['history'] = history
 		item['userRank'] = user_rank
 	result['companies'] = companies
+	return JsonResponse(result)
+
+def json_data_company(request, usersetup_id):
+	user_setup = UserSetup.objects.get(id=usersetup_id)
+	item = {}
+	item['score'] = user_setup.score
+	item['companyId'] = user_setup.company.id
+	item['userSetupId'] = user_setup.id
+	company_tasks = []
+	for task in CompanyTask.get_open_for_company(user_setup.company).order_by('title'):
+		company_tasks.append({
+			'id': task.id,
+			'title': task.title,
+			'score': task.score,
+			'penalty': default_on_none(task.penalty, 0)
+		})
+	user_tasks = []
+	for task in CompanyTask.get_open_for_user_setup(user_setup).order_by('title'):
+		user_tasks.append({
+			'id': task.id,
+			'title': task.title,
+			'score': task.score,
+			'penalty': default_on_none(task.penalty, 0)
+		})
+	history = []
+	for history_item in user_setup.history(100):
+		history.append({
+			'score': history_item.score,
+			'message': history_item.message,
+			'created': history_item.created.strftime('%Y-%m-%d %H:%M')
+			})
+	user_rank = []
+	i = 0
+	for user_setup in UserSetup.get_rank_by_company(company = user_setup.company):
+		i += 1
+		user_rank.append({
+			'rank': i,
+			'username': user_setup.user.username,
+			'score': user_setup.score
+		})
+	item['name'] = user_setup.company.name
+	item['companyTasks'] = company_tasks
+	item['userTasks'] = user_tasks
+	item['history'] = history
+	item['userRank'] = user_rank
+	return JsonResponse(item)
+
+
+def json_data_tasklist(request, company_id):
+	company = Company.objects.get(id=company_id)
+	result = {}
+	tasks = []
+	for task in CompanyTask.get_open_for_company(company).order_by('title'):
+		tasks.append({
+			'id': task.id,
+			'title': task.title,
+			'score': task.score,
+			'penalty': default_on_none(task.penalty, 0)
+		})
+	result['tasks'] = tasks
+	return JsonResponse(result)
+
+def json_data_usersetup(request, usersetup_id):
+	user_setup = UserSetup.objects.get(id=usersetup_id)
+	result = {}
+	tasks = []
+	for task in CompanyTask.get_open_for_user_setup(user_setup).order_by('title'):
+		tasks.append({
+			'id': task.id,
+			'title': task.title,
+			'score': task.score,
+			'penalty': default_on_none(task.penalty, 0)
+		})
+	result['tasks'] = tasks
 	return JsonResponse(result)
 
 def json_login(request):
