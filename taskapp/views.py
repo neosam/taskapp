@@ -282,8 +282,8 @@ def json_edit_task(request, task_id):
 	else:
 		task = CompanyTask.objects.get(id = task_id)
 	new_title = request.GET['title']
-	new_score = float(request.GET['score'])
-	new_penalty = float(request.GET['penalty'])
+	new_score = float(request.GET['score'].replace(',', '.'))
+	new_penalty = float(request.GET['penalty'].replace(',', '.'))
 	new_regular_bool = request.GET['regular'] == 'True'
 	if new_regular_bool == True:
 		new_regular = datetime.timedelta(0)
