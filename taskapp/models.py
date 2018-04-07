@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.db.models import Sum
 
 # Create your models here.
 class CompanyTask(models.Model):
@@ -87,6 +88,27 @@ class UserSetup(models.Model):
 
     def get_rank_by_company(company):
     	return UserSetup.objects.filter(company = company).order_by('-score')
+
+    def monthly_score(self, year, month):
+    	begin = datetime.datetime(year, month, 1)
+    	if month == 12:
+    		month = 0
+    		year += 1
+    	end = datetime.datetime(year, month + 1, 1) - datetime.timedelta(1)
+    	score = UserScoreHistory.objects.filter(user = self).filter(created__gt = begin, created__lt = end).exclude(message="Daily reduction").aggregate(Sum("score_delta"))['score_delta__sum']
+    	if score == None:
+    		score = 0
+    	return score
+
+    def monthly_score_delta(self, delta):
+    	today = datetime.datetime.now()
+    	year = today.year
+    	month = today.month
+    	month -= delta
+    	while month < 1:
+    		year -= 1
+    		month += 12
+    	return self.monthly_score(year, month)
 
 
 

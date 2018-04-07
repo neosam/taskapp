@@ -32,7 +32,9 @@
 											{% for userSetup in userSetup.users %}
 											<li class="list-group-item">
 												{{ forloop.counter }}. <span class="badge badge-success">{{userSetup.score | floatformat:-2}}</span>
-												<a href="user-setup-details/{{userSetup.id}}">{{userSetup.user.username}}</a>
+												<a href="user-setup-details/{{userSetup.id}}">{{userSetup.user.username}}</a><br/>
+												This month: {{userSetup.score_this_month | floatformat:-2}} ({{userSetup.percent_score_this_month | floatformat:-2}} %)<br/>
+												Last month: {{userSetup.score_last_month | floatformat:-2}} ({{userSetup.percent_score_last_month | floatformat:-2}} %)
 											</li>
 											{% endfor %}
 											

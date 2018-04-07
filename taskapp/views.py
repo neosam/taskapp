@@ -20,12 +20,22 @@ def default_on_none(value, default_value):
 # Create your views here.
 @login_required(login_url="/accounts/login")
 def index(request):
+	overallScoreThisMonth = 0
+	overallScoreLastMonth = 0
 	user = request.user
 	userSetups = UserSetup.objects.filter(user=user)
 	for userSetup in userSetups:
 		userSetup.companyTasks = CompanyTask.get_open_for_user_setup(userSetup).order_by('title')
 		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company).order_by('title')
 		userSetup.users = UserSetup.get_rank_by_company(company = userSetup.company)
+		for user in userSetup.users:
+			user.score_this_month = user.monthly_score_delta(0)
+			user.score_last_month = user.monthly_score_delta(1)
+			overallScoreThisMonth += user.score_this_month
+			overallScoreLastMonth += user.score_last_month
+		for user in userSetup.users:
+			user.percent_score_this_month = user.score_this_month / overallScoreThisMonth * 100
+			user.percent_score_last_month = user.score_last_month / overallScoreLastMonth * 100
 		userSetup.history_vals = userSetup.history(10)
 		userSetup.all_user_history = userSetup.company.all_user_history(datetime.timedelta(7))
 	return render(request, "taskapp/index.html", {'userSetups': userSetups})
