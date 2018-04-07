@@ -20,11 +20,11 @@ def default_on_none(value, default_value):
 # Create your views here.
 @login_required(login_url="/accounts/login")
 def index(request):
-	overallScoreThisMonth = 0
-	overallScoreLastMonth = 0
 	user = request.user
 	userSetups = UserSetup.objects.filter(user=user)
 	for userSetup in userSetups:
+		overallScoreThisMonth = 0
+		overallScoreLastMonth = 0
 		userSetup.companyTasks = CompanyTask.get_open_for_user_setup(userSetup).order_by('title')
 		userSetup.freeTasks = CompanyTask.get_open_for_company(company = userSetup.company).order_by('title')
 		userSetup.users = UserSetup.get_rank_by_company(company = userSetup.company)
