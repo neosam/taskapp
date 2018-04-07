@@ -126,6 +126,9 @@ def json_data(request):
 	result = {}
 	companies = []
 	for user_setup in user_setups:
+		overallScoreThisMonth = 0
+		overallScoreLastMonth = 0
+
 		item = {}
 		item['score'] = user_setup.score
 		item['companyId'] = user_setup.company.id
@@ -160,11 +163,22 @@ def json_data(request):
 		i = 0
 		for user_setup in UserSetup.get_rank_by_company(company = user_setup.company):
 			i += 1
+			this_month_score = user_setup.monthly_score_delta(0)
+			last_month_score = user_setup.monthly_score_delta(1)
 			user_rank.append({
+				'userId': user_setup.user.id,
+				'userSetupId': user_setup.id,
 				'rank': i,
 				'username': user_setup.user.username,
-				'score': user_setup.score
+				'score': user_setup.score,
+				'scoreThisMonth': user_setup.monthly_score_delta(0),
+				'scoreLastMonth': user_setup.monthly_score_delta(1)
 			})
+			overallScoreThisMonth += this_month_score
+			overallScoreLastMonth += last_month_score
+		for user in user_rank:
+				user['percentScoreThisMonth'] = user['scoreThisMonth'] / overallScoreThisMonth
+				user['percentScoreLastMonth'] = user['scoreLastMonth'] / overallScoreLastMonth
 		item['name'] = user_setup.company.name
 		item['companyTasks'] = company_tasks
 		item['userTasks'] = user_tasks
