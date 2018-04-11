@@ -159,7 +159,7 @@ def json_data(request):
 				'message': history_item.message,
 				'created': history_item.created.strftime('%Y-%m-%d %H:%M')
 				})
-		user_rank = []
+		user_ranks = []
 		i = 0
 		for user_setup in UserSetup.get_rank_by_company(company = user_setup.company):
 			i += 1
@@ -174,19 +174,26 @@ def json_data(request):
 				'scoreThisMonth': user_setup.monthly_score_delta(0),
 				'scoreLastMonth': user_setup.monthly_score_delta(1)
 			}
-			user_rank.append(current_user_rank)
+			user_ranks.append(current_user_rank)
 			if current_user_rank['userId'] == user.id:
 				item['user'] = current_user_rank
 			overallScoreThisMonth += this_month_score
 			overallScoreLastMonth += last_month_score
-		for user in user_rank:
-				user['percentScoreThisMonth'] = user['scoreThisMonth'] / overallScoreThisMonth
-				user['percentScoreLastMonth'] = user['scoreLastMonth'] / overallScoreLastMonth
+		for user_rank in user_ranks:
+			if overallScoreThisMonth == 0:
+				user_rank['percentScoreThisMonth'] = 0
+			else:
+				user_rank['percentScoreThisMonth'] = user_rank['scoreThisMonth'] / overallScoreThisMonth
+				
+			if overallScoreLastMonth == 0:
+				user_rank['percentScoreLastMonth'] = 0
+			else:
+				user_rank['percentScoreLastMonth'] = user_rank['scoreLastMonth'] / overallScoreLastMonth
 		item['name'] = user_setup.company.name
 		item['companyTasks'] = company_tasks
 		item['userTasks'] = user_tasks
 		item['history'] = history
-		item['userRank'] = user_rank
+		item['userRank'] = user_ranks
 	result['companies'] = companies
 	return JsonResponse(result)
 
