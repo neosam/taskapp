@@ -165,7 +165,7 @@ def json_data(request):
 			i += 1
 			this_month_score = user_setup.monthly_score_delta(0)
 			last_month_score = user_setup.monthly_score_delta(1)
-			user_rank.append({
+			current_user_rank = {
 				'userId': user_setup.user.id,
 				'userSetupId': user_setup.id,
 				'rank': i,
@@ -173,7 +173,10 @@ def json_data(request):
 				'score': user_setup.score,
 				'scoreThisMonth': user_setup.monthly_score_delta(0),
 				'scoreLastMonth': user_setup.monthly_score_delta(1)
-			})
+			}
+			user_rank.append(current_user_rank)
+			if current_user_rank['userId'] == user.id:
+				item['user'] = current_user_rank
 			overallScoreThisMonth += this_month_score
 			overallScoreLastMonth += last_month_score
 		for user in user_rank:
@@ -265,6 +268,20 @@ def json_data_usersetup(request, usersetup_id):
 	result['tasks'] = tasks
 	return JsonResponse(result)
 
+def json_data_history(request, user_setup_id):
+	user_setup = UserSetup.objects.get(id=user_setup_id)
+	result = {}
+	history = []
+	for history_item in user_setup.history(100):
+			history.append({
+				'score': history_item.score,
+				'message': history_item.message,
+				'created': history_item.created.strftime('%Y-%m-%d %H:%M')
+				})
+	result['history'] = history
+	return JsonResponse(result)
+
+
 def json_login(request):
 	username = request.GET['username']
 	password = request.GET['password']
@@ -320,6 +337,24 @@ def json_edit_task(request, task_id):
 	task.regular = new_regular
 	task.save()
 	return JsonResponse({'success': True}) 
+
+def json_modify_score(request, user_setup_id):
+	username = request.GET['username']
+	password = request.GET['password']
+	user = auth.authenticate(username = username, password = password)
+
+	if user == None:
+		return JsonResponse({'success': False})
+
+	message = request.GET['message']
+	score_delta = float(request.GET['score-delta'])
+	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
+	src_user_setup = get_object_or_404(UserSetup.objects, user = user, company = dest_user_setup.company)
+	dest_user_setup.modify_score(score_delta, src_user_setup.user.username + " modification: " + message)
+	return JsonResponse({'success': True})
+
+
+
 
 
 
