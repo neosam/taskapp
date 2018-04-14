@@ -126,7 +126,7 @@ class UserSetup(models.Model):
     	for user_setup in UserSetup.objects.filter(company = self.company).exclude(user = self.user):
     		push(user_setup.user, message)
     def push(self, message):
-    	push(user_setup.user, message)
+    	push(self.user, message)
 
 
 class UserScoreHistory(models.Model):

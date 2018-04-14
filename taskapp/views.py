@@ -108,6 +108,7 @@ def revert_history_item(request, history_id):
 	# TODO: Check permissions
 	history_item = get_object_or_404(UserScoreHistory.objects, id=history_id)
 	history_item.user.modify_score(-history_item.score_delta, request.user.username + " reverted: " + history_item.message)
+	history_item.user.push(request.user.username + " reverted: " + history_item.message) 
 	return redirect('../user-setup-details/' + str(history_item.user.id))
 
 def mod_score(request, user_setup_id):
@@ -119,6 +120,7 @@ def mod_score(request, user_setup_id):
 	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
 	src_user_setup = get_object_or_404(UserSetup.objects, user = request.user, company = dest_user_setup.company)
 	dest_user_setup.modify_score(score, src_user_setup.user.username + " modification: " + message)
+	dest_user_setup.push(src_user_setup.user.username + " modified your score by " + str(score) + ": " + message)
 	return redirect('../user-setup-details/' + str(dest_user_setup.id))
 
 def logout(request):
@@ -366,6 +368,7 @@ def json_modify_score(request, user_setup_id):
 	dest_user_setup = get_object_or_404(UserSetup.objects, id=user_setup_id)
 	src_user_setup = get_object_or_404(UserSetup.objects, user = user, company = dest_user_setup.company)
 	dest_user_setup.modify_score(score_delta, src_user_setup.user.username + " modification: " + message)
+	dest_user_setup.push(username + " modified your score by " + str(score_delta) + ": " + message)
 	return JsonResponse({'success': True})
 
 def send_message(request, user_id):
