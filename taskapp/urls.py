@@ -21,7 +21,7 @@ urlpatterns = [
     path('json-verify-login', views.json_login, name="json_login"),
     path('json-complete-task/<int:task_id>', views.json_complete_task),
     path('json-edit-task/<int:task_id>', views.json_edit_task),
-    path('json-modify-score/<int:user_setup_id>', views.json_modify_score)
-    
+    path('json-modify-score/<int:user_setup_id>', views.json_modify_score),
+    path('send-push/<int:user_id>', views.send_message),
 
 ]

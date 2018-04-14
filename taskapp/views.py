@@ -9,7 +9,9 @@ from .forms import *
 from django.contrib.auth.decorators import login_required
 from django.contrib import auth
 
+
 import datetime
+from .push import *
 
 def default_on_none(value, default_value):
 	if value == None:
@@ -34,8 +36,14 @@ def index(request):
 			overallScoreThisMonth += user.score_this_month
 			overallScoreLastMonth += user.score_last_month
 		for user in userSetup.users:
-			user.percent_score_this_month = user.score_this_month / overallScoreThisMonth * 100
-			user.percent_score_last_month = user.score_last_month / overallScoreLastMonth * 100
+			if overallScoreThisMonth == 0:
+				user.percent_score_this_month = 0.0
+			else:
+				user.percent_score_this_month = user.score_this_month / overallScoreThisMonth * 100
+			if overallScoreLastMonth == 0:
+				user.percent_score_last_month = 0.0
+			else:
+				user.percent_score_last_month = user.score_last_month / overallScoreLastMonth * 100
 		userSetup.history_vals = userSetup.history(10)
 		userSetup.all_user_history = userSetup.company.all_user_history(datetime.timedelta(7))
 	return render(request, "taskapp/index.html", {'userSetups': userSetups})
@@ -360,7 +368,10 @@ def json_modify_score(request, user_setup_id):
 	dest_user_setup.modify_score(score_delta, src_user_setup.user.username + " modification: " + message)
 	return JsonResponse({'success': True})
 
-
+def send_message(request, user_id):
+	message = request.GET['message']
+	user = get_object_or_404(User.objects, id=user_id)
+	push(user, message)
 
 
 

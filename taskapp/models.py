@@ -3,7 +3,18 @@ from django.contrib.auth.models import User
 import datetime
 from django.db.models import Sum
 
+
+
 # Create your models here.
+class IosPush(models.Model):
+	device_id = models.CharField(max_length = 64)
+	user = models.ForeignKey(User, on_delete = models.CASCADE)
+	created = models.DateTimeField(auto_now = True)
+	def __str__(self):
+		return self.user.username
+
+from .push import push
+
 class CompanyTask(models.Model):
 	title = models.CharField(max_length=1000)
 	created = models.DateTimeField(auto_now = True)
@@ -79,6 +90,7 @@ class UserSetup(models.Model):
     			score_delta = score_delta)
     	newUserScore.save()
     	self.save()
+    	self.push_others(self.user.username + ": " + message)
 
     def history(self, amount):
     	return UserScoreHistory.objects.filter(user = self).order_by('-created')[0:amount]
@@ -110,6 +122,11 @@ class UserSetup(models.Model):
     		month += 12
     	return self.monthly_score(year, month)
 
+    def push_others(self, message):
+    	for user_setup in UserSetup.objects.filter(company = self.company).exclude(user = self.user):
+    		push(user_setup.user, message)
+    def push(self, message):
+    	push(user_setup.user, message)
 
 
 class UserScoreHistory(models.Model):
@@ -120,6 +137,7 @@ class UserScoreHistory(models.Model):
 	created = models.DateTimeField(auto_now = True)
 	def __str__(self):
 		return str(self.user) + ": " + self.message[0:80] + " - (" + str(self.score) + ", " + str(self.score_delta) + ")"
+
 
 
 
